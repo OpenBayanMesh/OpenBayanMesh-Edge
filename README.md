@@ -1,152 +1,106 @@
 # OpenBayanMesh-Edge
 
-Edge Node software for the OpenBayanMesh network infrastructure.
+## Introduction
+OpenBayanMesh-Edge is a robust and scalable edge service built with FastAPI (Python 3.12 LTS), Neo4j, and Cloudflared. It provides a secure and versioned API for interacting with mesh network data, designed for high availability and easy deployment using Docker Compose.
 
-## Overview
+## Architectural Overview
+The OpenBayanMesh-Edge stack consists of:
+- **FastAPI Web Service:** A Python 3.12 LTS application providing a versioned REST API.
+- **Neo4j Database:** A graph database for storing and querying mesh network data.
+- **Cloudflared Tunnel:** A secure tunnel for exposing the API to the internet via Cloudflare Zero Trust.
 
-OpenBayanMesh-Edge is a containerized edge node solution designed to facilitate distributed mesh networking. This software package enables edge devices to participate in the OpenBayanMesh ecosystem, providing decentralized connectivity and services.
+## Main Features
+- **API Versioning:** Supports semantic versioning for API endpoints (e.g., `/v1/`, `/v2/`).
+- **Containerized Deployment:** Easy setup and deployment using Docker Compose.
+- **Secure Access:** Integration with Cloudflare Zero Trust for secure external access.
+- **Graph Database:** Utilizes Neo4j for efficient storage and querying of interconnected data.
+- **Comprehensive Documentation:** Auto-generated OpenAPI docs and extended markdown documentation.
 
-## Features
+## API Versioning Explanation
+OpenBayanMesh-Edge employs a semantic versioning scheme for its API to ensure backward compatibility and clear communication of changes. New features or non-breaking changes are typically introduced within the same major version. Breaking changes will result in a new major API version (e.g., `/v2/`), with previous versions remaining available for a defined sunset period. The `/versions` endpoint provides a list of all supported and deprecated API versions.
 
-- **Docker Compose Deployment**: Easy setup and management using Docker Compose orchestration
-- **RESTful APIs**: Comprehensive API endpoints for node management and monitoring
-- **Mesh Networking**: Seamless integration with the OpenBayanMesh network
-- **Lightweight Architecture**: Optimized for edge computing environments
-- **Scalable Design**: Support for multiple edge node deployments
+## Project Structure
 
-## Requirements
+The project follows a standard Python project layout:
 
-- Docker Engine 20.10 or higher
-- Docker Compose 2.0 or higher
-- Linux-based operating system (recommended)
-- Minimum 1GB RAM
-- Network connectivity
+```
+.
+├── .env.example
+├── .flake8
+├── .gitignore
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── docker-compose.yml
+├── Dockerfile
+├── LICENSE.md
+├── mypy.ini
+├── README.md
+├── requirements.txt
+├── cloudflared/
+│   └── config.yaml
+├── docs/
+│   └── ...
+├── scripts/
+│   ├── init_db.sh
+│   └── test.sh
+├── src/
+│   ├── __init__.py
+│   ├── dependencies.py
+│   ├── domain_manager.py
+│   ├── importer.py
+│   ├── main.py
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   ├── weather_data.json
+│   │   └── weather_mapping.json
+│   └── routers/
+│       ├── __init__.py
+│       └── v1.py
+└── tests/
+    ├── __init__.py
+    ├── test_api_v1.py
+    └── test_versioning.py
+```
 
-## Installation
+## Quickstart
 
-### Using Docker Compose
+### Prerequisites
+- Docker and Docker Compose installed.
+- A Cloudflare Zero Trust account and a tunnel token (`TUNNEL_TOKEN`).
+- (Optional) A Cloudflare Tunnel ID (`TUNNEL_ID`) if you have an existing tunnel.
 
-1. Clone the repository:
+### 1. Clone the repository
 ```bash
-git clone https://github.com/OpenBayanMesh/OpenBayanMesh-Edge.git
+git clone https://github.com/your-org/OpenBayanMesh-Edge.git
 cd OpenBayanMesh-Edge
 ```
 
-2. Configure your environment:
+### 2. Configure Environment Variables
+Copy the example environment file and fill in your details:
 ```bash
 cp .env.example .env
-# Edit .env with your configuration
+# Open .env and fill in TUNNEL_TOKEN, TUNNEL_ID, DATA_DOMAINS (e.g., WEATHER,HEALTH), REGION (e.g., PH-NCR), and any other desired configurations.
 ```
 
-3. Start the edge node:
+### 3. Build and Run with Docker Compose
 ```bash
-docker-compose up -d
+docker-compose up --build -d
 ```
+This will start the FastAPI application, Neo4j database, and Cloudflared tunnel.
 
-4. Verify the node is running:
-```bash
-docker-compose ps
-```
+### 4. Access the API
+- **Local API:** `http://localhost:8000`
+- **API Documentation (Swagger UI):** `http://localhost:8000/docs`
+- **API Documentation (Redoc):** `http://localhost:8000/redoc`
+- **Cloudflare Tunnel:** Once Cloudflared is configured and running, your API will be accessible via your configured Cloudflare domain.
 
-## API Documentation
-
-The Edge Node exposes several API endpoints for management and monitoring:
-
-### Node Status
-```
-GET /api/status
-```
-Returns the current status of the edge node.
-
-### Node Configuration
-```
-GET /api/config
-POST /api/config
-```
-Retrieve or update node configuration.
-
-### Network Information
-```
-GET /api/network
-```
-Provides information about mesh network connectivity.
-
-### Health Check
-```
-GET /api/health
-```
-Health check endpoint for monitoring.
-
-## Configuration
-
-Configuration is managed through environment variables in the `.env` file:
-
-- `NODE_ID`: Unique identifier for the edge node
-- `MESH_NETWORK`: Network name to join
-- `API_PORT`: Port for API access (default: 8080)
-- `LOG_LEVEL`: Logging verbosity (debug, info, warn, error)
-
-## Usage
-
-### Starting the Node
-```bash
-docker-compose up -d
-```
-
-### Stopping the Node
-```bash
-docker-compose down
-```
-
-### Viewing Logs
-```bash
-docker-compose logs -f
-```
-
-### Restarting Services
-```bash
-docker-compose restart
-```
-
-## Development
-
-For development and testing:
-
-```bash
-# Build local images
-docker-compose build
-
-# Run in development mode
-docker-compose -f docker-compose.dev.yml up
-```
-
-## Troubleshooting
-
-### Port Conflicts
-If port 8080 is already in use, modify the `API_PORT` in your `.env` file.
-
-### Connection Issues
-Check network connectivity and firewall settings. Ensure required ports are open.
-
-### Container Failures
-Review logs with `docker-compose logs` for detailed error messages.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
-## License
-
-This project is dedicated to the public domain under CC0 1.0 Universal. See [LICENSE.md](LICENSE.md) for details.
-
-## Support
-
-For questions and support:
-- Open an issue on GitHub
-- Join the OpenBayanMesh community discussions
-
-## Related Projects
-
-- [OpenBayanMesh Core](https://github.com/OpenBayanMesh)
-- OpenBayanMesh Cloud
-- OpenBayanMesh Gateway
+## Further Documentation
+Refer to the `docs/` directory for more detailed information:
+- `docs/INSTALL.md`: Detailed installation guide.
+- `docs/API.md`: Comprehensive API documentation.
+- `docs/HEALTH.md`: Explanation of the health endpoint and troubleshooting.
+- `docs/SECURITY.md`: Security guidelines.
+- `docs/VERSIONING.md`: In-depth explanation of API versioning.
+- `scripts/init_db.sh`: Script for initializing the Neo4j database.
+- `scripts/test.sh`: Script for running tests.

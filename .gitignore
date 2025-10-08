@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Docker
+*.dockerignore
+*.swp
+.DS_Store
+
+# OS generated files
+.DS_Store
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Cloudflared
+cloudflared/cert.pem
+cloudflared/key.pem
+
+# Neo4j
+neo4j/data/
+neo4j/logs/
+neo4j/plugins/

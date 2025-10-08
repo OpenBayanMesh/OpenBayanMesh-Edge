@@ -1,0 +1,13 @@
+{
+  "rename_fields": {
+    "city": "location_name",
+    "temperature": "temp_celsius"
+  },
+  "type_conversions": {
+    "temp_celsius": "float",
+    "timestamp": "date"
+  },
+  "default_values": {
+    "unit": "celsius"
+  }
+}
